@@ -38,7 +38,7 @@ public class PlutoGame extends Game {
         setScreen(new GameScreen());
         planets = new ArrayList<>();
         createPlanets();
-        currentLevel = new Level1(); // Start with the initial level
+        currentLevel = new Level1(); 
     }
 
     private void createPlanets() {
