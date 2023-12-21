@@ -250,7 +250,7 @@ public class PlutoGame extends Game {
         @Override
         public String getName() {
             return "Level 3";
-        }
+            }
 
         @Override
         public void update() {
