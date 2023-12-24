@@ -212,9 +212,6 @@ public class PlutoGame extends Game {
             return position;
         }
 
-        public void dispose() {
-            // Dispose of planet resources if needed
-        }
     }
 
     abstract class Level {
