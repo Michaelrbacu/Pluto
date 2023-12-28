@@ -11,7 +11,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,10 @@ public class PlutoGame extends Game {
     private SpriteBatch batch;
     private List<Planet> planets;
     private Level currentLevel;
+
+    private Stage stage;
+    private Label messageLabel;
+    private float messageTimer;
 
     @Override
     public void create() {
@@ -38,7 +44,13 @@ public class PlutoGame extends Game {
         setScreen(new GameScreen());
         planets = new ArrayList<>();
         createPlanets();
-        currentLevel = new Level1(); 
+        currentLevel = new Level1();
+
+        stage = new Stage();
+        Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
+        messageLabel = new Label("", skin);
+        messageLabel.setPosition(Gdx.graphics.getWidth() / 2f - 50, Gdx.graphics.getHeight() / 2f);
+        stage.addActor(messageLabel);
     }
 
     private void createPlanets() {
@@ -77,6 +89,16 @@ public class PlutoGame extends Game {
             handleInput();
             updateCamera();
             draw();
+
+            stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+            stage.draw();
+
+            if (messageTimer > 0) {
+                messageTimer -= delta;
+                if (messageTimer <= 0) {
+                    messageLabel.setText("");
+                }
+            }
         }
 
         private void handleInput() {
@@ -176,27 +198,14 @@ public class PlutoGame extends Game {
         }
 
         public void draw() {
-            // Check for collision with the player
             if (isPlayerColliding(playerPosition)) {
                 onPlayerCollision();
             }
 
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            shapeRenderer.setColor(Color.WHITE);
-            shapeRenderer.circle(playerPosition.x, playerPosition.y, 5);
+            shapeRenderer.setColor(color);
+            shapeRenderer.circle(position.x, position.y, radius);
             shapeRenderer.end();
-
-            miniMap.draw(playerPosition);
-            currentLevel.update();
-        
-
-             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-             shapeRenderer.setColor(Color.WHITE);
-             shapeRenderer.circle(playerPosition.x, playerPosition.y, 5);
-             shapeRenderer.end();
-
-             miniMap.draw(playerPosition);
-             currentLevel.update();
         }
 
         public boolean isPlayerColliding(Vector2 playerPosition) {
@@ -205,13 +214,17 @@ public class PlutoGame extends Game {
 
         public void onPlayerCollision() {
             System.out.println("Touched " + name + "! Entering " + level.getName());
-            setScreen(level);
+            messageLabel.setText("Touched " + name + "! Entering " + level.getName());
+            messageTimer = 3f;
         }
 
         public Vector2 getPosition() {
             return position;
         }
 
+        public void dispose() {
+            // Dispose any resources if needed
+        }
     }
 
     abstract class Level {
@@ -247,7 +260,7 @@ public class PlutoGame extends Game {
         @Override
         public String getName() {
             return "Level 3";
-            }
+        }
 
         @Override
         public void update() {
@@ -327,4 +340,3 @@ public class PlutoGame extends Game {
         }
     }
 }
-
