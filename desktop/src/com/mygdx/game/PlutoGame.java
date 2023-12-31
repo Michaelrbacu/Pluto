@@ -11,9 +11,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.math.Vector3;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +24,6 @@ public class PlutoGame extends Game {
     private SpriteBatch batch;
     private List<Planet> planets;
     private Level currentLevel;
-
-    private Stage stage;
-    private Label messageLabel;
-    private float messageTimer;
 
     @Override
     public void create() {
@@ -45,14 +39,8 @@ public class PlutoGame extends Game {
         planets = new ArrayList<>();
         createPlanets();
         currentLevel = new Level1();
-
-        stage = new Stage();
-        Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
-        messageLabel = new Label("", skin);
-        messageLabel.setPosition(Gdx.graphics.getWidth() / 2f - 50, Gdx.graphics.getHeight() / 2f);
-        stage.addActor(messageLabel);
     }
-
+    
     private void createPlanets() {
         planets.add(new Planet("Mercury", Color.RED, 100, 100, new Level2()));
         planets.add(new Planet("Venus", Color.YELLOW, 300, 200, new Level3()));
@@ -89,16 +77,6 @@ public class PlutoGame extends Game {
             handleInput();
             updateCamera();
             draw();
-
-            stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
-            stage.draw();
-
-            if (messageTimer > 0) {
-                messageTimer -= delta;
-                if (messageTimer <= 0) {
-                    messageLabel.setText("");
-                }
-            }
         }
 
         private void handleInput() {
@@ -214,10 +192,8 @@ public class PlutoGame extends Game {
 
         public void onPlayerCollision() {
             System.out.println("Touched " + name + "! Entering " + level.getName());
-            messageLabel.setText("Touched " + name + "! Entering " + level.getName());
-            messageTimer = 3f;
         }
-
+        
         public Vector2 getPosition() {
             return position;
         }
