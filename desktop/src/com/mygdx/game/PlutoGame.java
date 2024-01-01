@@ -23,12 +23,12 @@ public class PlutoGame extends Game {
     private OrthographicCamera camera;
     private SpriteBatch batch;
     private List<Planet> planets;
-    private Level currentLevel;
+    private LevelHD110067a currentLevel;
 
     @Override
     public void create() {
         shapeRenderer = new ShapeRenderer();
-        playerPosition = new Vector2(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
+        playerPosition = new Vector2(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f); // Initialize playerPosition
         miniMap = new MiniMap();
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.zoom = 1.0f;
@@ -38,19 +38,21 @@ public class PlutoGame extends Game {
         setScreen(new GameScreen());
         planets = new ArrayList<>();
         createPlanets();
-        currentLevel = new Level1();
+        currentLevel = new LevelHD110067a();
     }
-    
+
+
     private void createPlanets() {
-        planets.add(new Planet("Mercury", Color.RED, 100, 100, new Level2()));
-        planets.add(new Planet("Venus", Color.YELLOW, 300, 200, new Level3()));
-        planets.add(new Planet("Mars", Color.RED, 500, 300, new Level4()));
-        planets.add(new Planet("Jupiter", Color.ORANGE, 700, 400, new Level5()));
-        planets.add(new Planet("Saturn", Color.YELLOW, 900, 500, new Level6()));
-        planets.add(new Planet("Uranus", Color.BLUE, 1100, 600, new Level7()));
-        planets.add(new Planet("Neptune", Color.BLUE, 1300, 700, new Level8()));
-        planets.add(new Planet("Pluto", Color.GRAY, 1500, 800, new Level9()));
+    	planets.add(new Planet("HD110067a", Color.RED, 100, 100, new LevelHD110067a(), playerPosition));
+        planets.add(new Planet("HD110067b", Color.YELLOW, 300, 200, new LevelHD110067b(), playerPosition));
+        planets.add(new Planet("HD110067c", Color.BLUE, 500, 300, new LevelHD110067c(), playerPosition));
+        planets.add(new Planet("HD110067d", Color.ORANGE, 700, 400, new LevelHD110067d(), playerPosition));
+        planets.add(new Planet("HD110067e", Color.PURPLE, 900, 500, new LevelHD110067e(), playerPosition));
+        planets.add(new Planet("HD110067f", Color.WHITE, 1100, 600, new LevelHD110067f(), playerPosition));
+        planets.add(new Planet("HD110067g", Color.GREEN, 1300, 700, new LevelHD110067g(), playerPosition));
     }
+
+
 
     @Override
     public void dispose() {
@@ -122,7 +124,7 @@ public class PlutoGame extends Game {
             miniMap.draw(playerPosition);
             currentLevel.update();
         }
-
+        
         @Override
         public void resize(int width, int height) {
             camera.viewportWidth = width;
@@ -150,8 +152,10 @@ public class PlutoGame extends Game {
 
     class MiniMap {
         private static final float PLAYER_DOT_SIZE = 5f;
+        private Vector2 playerPosition;
 
         void draw(Vector2 playerPosition) {
+            this.playerPosition = playerPosition;
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             shapeRenderer.setColor(Color.BLUE);
             for (Planet planet : planets) {
@@ -165,154 +169,115 @@ public class PlutoGame extends Game {
         private String name;
         private Color color;
         private Vector2 position;
+        private Vector2 playerPosition;
         private float radius = 20f;
         private Level level;
 
-        public Planet(String name, Color color, float x, float y, Level level) {
+        public Planet(String name, Color color, float x, float y, Level level, Vector2 playerPosition) {
             this.name = name;
             this.color = color;
             this.position = new Vector2(x, y);
             this.level = level;
+            this.playerPosition = playerPosition;
         }
 
-        public void draw() {
-            if (isPlayerColliding(playerPosition)) {
-                onPlayerCollision();
-            }
-
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            shapeRenderer.setColor(color);
-            shapeRenderer.circle(position.x, position.y, radius);
-            shapeRenderer.end();
+        public Planet(String name, Color color, float x, float y, LevelHD110067a level, Vector2 playerPosition) {
+            this.name = name;
+            this.color = color;
+            this.position = new Vector2(x, y);  // Ensure that position is initialized
+            this.level = level;
+            this.playerPosition = playerPosition;
         }
 
-        public boolean isPlayerColliding(Vector2 playerPosition) {
-            return playerPosition.dst2(position) < (radius * radius);
-        }
-
-        public void onPlayerCollision() {
-            System.out.println("Touched " + name + "! Entering " + level.getName());
+        public Planet(String name, Color color, float x, float y, LevelHD110067b level, Vector2 playerPosition) {
+            this.name = name;
+            this.color = color;
+            this.position = new Vector2(x, y);  // Ensure that position is initialized
+            this.level = level;
+            this.playerPosition = playerPosition;
         }
         
-        public Vector2 getPosition() {
-            return position;
+        public Planet(String name, Color color, float x, float y, LevelHD110067c level, Vector2 playerPosition) {
+            this.name = name;
+            this.color = color;
+            this.position = new Vector2(x, y);  // Ensure that position is initialized
+            this.level = level;
+            this.playerPosition = playerPosition;
+        }
+        
+        public Planet(String name, Color color, float x, float y, LevelHD110067d level, Vector2 playerPosition) {
+            this.name = name;
+            this.color = color;
+            this.position = new Vector2(x, y);  // Ensure that position is initialized
+            this.level = level;
+            this.playerPosition = playerPosition;
+        }
+		
+        public Planet(String name, Color color, float x, float y, LevelHD110067e level, Vector2 playerPosition) {
+            this.name = name;
+            this.color = color;
+            this.position = new Vector2(x, y);  // Ensure that position is initialized
+            this.level = level;
+            this.playerPosition = playerPosition;
+        }
+        
+        public Planet(String name, Color color, float x, float y, LevelHD110067f level, Vector2 playerPosition) {
+            this.name = name;
+            this.color = color;
+            this.position = new Vector2(x, y);  // Ensure that position is initialized
+            this.level = level;
+            this.playerPosition = playerPosition;
+        }
+        
+        public Planet(String name, Color color, float x, float y, LevelHD110067g level, Vector2 playerPosition) {
+            this.name = name;
+            this.color = color;
+            this.position = new Vector2(x, y);  // Ensure that position is initialized
+            this.level = level;
+            this.playerPosition = playerPosition;
         }
 
-        public void dispose() {
-            // Dispose any resources if needed
-        }
-    }
+		public void draw() {
+		    if (isPlayerColliding(playerPosition)) {
+		        onPlayerCollision();
+		    }
 
-    abstract class Level {
-        public abstract String getName();
-        public abstract void update();
-    }
+		    shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+		    
+		    if (color != null) {
+		        shapeRenderer.setColor(color);
+		    } else {
+		        // Handle the case where color is null (e.g., set a default color)
+		        shapeRenderer.setColor(Color.WHITE);
+		    }
+		    
+		    shapeRenderer.circle(position.x, position.y, radius);
+		    shapeRenderer.end();
+		}
 
-    class Level1 extends Level {
-        @Override
-        public String getName() {
-            return "Level 1";
-        }
 
-        @Override
-        public void update() {
-            // Update Level 1 logic
-        }
-    }
 
-    class Level2 extends Level {
-        @Override
-        public String getName() {
-            return "Level 2";
-        }
+		public boolean isPlayerColliding(Vector2 playerPosition) {
+		    if (playerPosition == null) {
+		        // Handle the case where playerPosition is null
+		        return false;  // Or whatever behavior is appropriate in your case
+		    }
+		    return playerPosition.dst2(position) < (radius * radius);
+		}
 
-        @Override
-        public void update() {
-            // Update Level 2 logic
-        }
-    }
 
-    class Level3 extends Level {
-        @Override
-        public String getName() {
-            return "Level 3";
-        }
+	    public void onPlayerCollision() {
+	        System.out.println("Touched " + name + "! Entering " + level.getName());
+	    }
+	    
+	    public Vector2 getPosition() {
+	        return position;
+	    }
 
-        @Override
-        public void update() {
-            // Update Level 3 logic
-        }
-    }
+	    public void dispose() {
+	        // Dispose any resources if needed
+	    }
+	}
+    
 
-    class Level4 extends Level {
-        @Override
-        public String getName() {
-            return "Level 4";
-        }
-
-        @Override
-        public void update() {
-            // Update Level 4 logic
-        }
-    }
-
-    class Level5 extends Level {
-        @Override
-        public String getName() {
-            return "Level 5";
-        }
-
-        @Override
-        public void update() {
-            // Update Level 5 logic
-        }
-    }
-
-    class Level6 extends Level {
-        @Override
-        public String getName() {
-            return "Level 6";
-        }
-
-        @Override
-        public void update() {
-            // Update Level 6 logic
-        }
-    }
-
-    class Level7 extends Level {
-        @Override
-        public String getName() {
-            return "Level 7";
-        }
-
-        @Override
-        public void update() {
-            // Update Level 7 logic
-        }
-    }
-
-    class Level8 extends Level {
-        @Override
-        public String getName() {
-            return "Level 8";
-        }
-
-        @Override
-        public void update() {
-            // Update Level 8 logic
-        }
-    }
-
-    class Level9 extends Level {
-        @Override
-        public String getName() {
-            return "Level 9";
-        }
-
-        @Override
-        public void update() {
-            // Update Level 9 logic
-        }
-    }
 }
