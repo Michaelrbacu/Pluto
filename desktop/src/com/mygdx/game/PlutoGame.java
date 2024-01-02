@@ -237,10 +237,17 @@ public class PlutoGame extends Game {
             this.playerPosition = playerPosition;
         }
 
-		public void draw() {
-		    if (isPlayerColliding(playerPosition)) {
-		        onPlayerCollision();
-		    }
+        private boolean hasCollided = false;
+
+        
+        public void draw() {
+            if (isPlayerColliding(playerPosition) && !hasCollided) {
+                onPlayerCollision();
+                hasCollided = true;  // Set the flag to true after the first collision
+            } else if (!isPlayerColliding(playerPosition)) {
+                // Reset the flag if the player is not colliding with the planet
+                hasCollided = false;
+            }
 
 		    shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 		    
@@ -266,9 +273,9 @@ public class PlutoGame extends Game {
 		}
 
 
-	    public void onPlayerCollision() {
-	        System.out.println("Touched " + name + "! Entering " + level.getName());
-	    }
+		   public void onPlayerCollision() {
+		        System.out.println("Touched " + name + "! Entering " + level.getName());
+		    }
 	    
 	    public Vector2 getPosition() {
 	        return position;
