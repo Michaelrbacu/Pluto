@@ -313,7 +313,18 @@ public class PlutoGame extends Game {
         // Handle actions when player collides with the planet
         public void onPlayerCollision() {
             System.out.println("Touched " + name + "! Entering " + level.getName());
+            
+            switchToChallengeScreen();
+
         }
+        
+        // Method to switch to the side-scroller platform challenge screen
+        private void switchToChallengeScreen() {
+            // Assuming you have a class representing the side-scroller platform challenge screen,
+            // replace PlatformChallengeScreen with the actual class name.
+            setScreen(new ChallengeScreen());
+        }
+
 
         // Get the position of the planet
         public Vector2 getPosition() {
