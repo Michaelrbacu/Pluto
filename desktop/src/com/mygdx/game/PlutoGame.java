@@ -228,7 +228,7 @@ public class PlutoGame extends Game {
 		public Planet(String name, Color color, float x, float y, LevelHD110067a level, Vector2 playerPosition) {
 			this.name = name;
 			this.color = color;
-			this.position = new Vector2(x, y); // Ensure that position is initialized
+			this.position = new Vector2(x, y); 
 			this.level = level;
 			this.playerPosition = playerPosition;
 		}
@@ -236,7 +236,7 @@ public class PlutoGame extends Game {
 		public Planet(String name, Color color, float x, float y, LevelHD110067b level, Vector2 playerPosition) {
 			this.name = name;
 			this.color = color;
-			this.position = new Vector2(x, y); // Ensure that position is initialized
+			this.position = new Vector2(x, y); 
 			this.level = level;
 			this.playerPosition = playerPosition;
 		}
@@ -244,7 +244,7 @@ public class PlutoGame extends Game {
 		public Planet(String name, Color color, float x, float y, LevelHD110067c level, Vector2 playerPosition) {
 			this.name = name;
 			this.color = color;
-			this.position = new Vector2(x, y); // Ensure that position is initialized
+			this.position = new Vector2(x, y); 
 			this.level = level;
 			this.playerPosition = playerPosition;
 		}
@@ -318,10 +318,8 @@ public class PlutoGame extends Game {
 
         }
         
-        // Method to switch to the side-scroller platform challenge screen
+        // Method to switch to the level screen
         private void switchToChallengeScreen() {
-            // Assuming you have a class representing the side-scroller platform challenge screen,
-            // replace PlatformChallengeScreen with the actual class name.
             setScreen(new ChallengeScreen());
         }
 
@@ -331,7 +329,6 @@ public class PlutoGame extends Game {
             return position;
         }
 
-        // Dispose of any resources associated with the planet
         public void dispose() {
             // Dispose any resources if needed
         }

@@ -1,20 +1,34 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 public class ChallengeScreen extends ScreenAdapter {
 
     private SpriteBatch batch;
     private Texture backgroundTexture;
     private Sprite backgroundSprite;
+
+    // Player sprite and position
+    private Texture playerTexture;
+    private Sprite playerSprite;
+    private Vector2 playerPosition;
+
     private OrthographicCamera camera;
+    private Vector2 backgroundPosition;
+
+    private Vector2 object1Position;
+    private Vector2 object2Position;
+    private float objectRadius = 10f; // Radius of the objects
+    private boolean gameOver = false;
 
     @Override
     public void show() {
@@ -22,33 +36,103 @@ public class ChallengeScreen extends ScreenAdapter {
         backgroundTexture = new Texture(Gdx.files.internal("challenge.png"));
         backgroundSprite = new Sprite(backgroundTexture);
         backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        playerTexture = new Texture(Gdx.files.internal("temp.png"));
+        playerSprite = new Sprite(playerTexture);
+        playerPosition = new Vector2(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
+        playerSprite.setPosition(playerPosition.x - playerSprite.getWidth() / 2f, playerPosition.y - playerSprite.getHeight() / 2f);
+
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, 0);
         camera.update();
+        backgroundPosition = new Vector2(0, 0);
+
+        // Set object positions
+        object1Position = new Vector2(300, 300);
+        object2Position = new Vector2(500, 500);
     }
 
     @Override
     public void render(float delta) {
         handleInput();
         updateCamera();
+        checkCollisions(); // New method to check collisions
         draw();
     }
 
     private void handleInput() {
-        // Handle input for the platform challenge, e.g., jumping, moving, etc.
+        float speed = 200f * Gdx.graphics.getDeltaTime();
+
+        // Move player based on input
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+            playerPosition.y += speed;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            playerPosition.x -= speed;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            playerPosition.y -= speed;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            playerPosition.x += speed;
+        }
     }
 
     private void updateCamera() {
-        // Update camera logic for the platform challenge
+        float lerp = 0.1f;
+        camera.position.lerp(new Vector3(playerPosition.x, playerPosition.y, 0), lerp);
+        camera.update();
+
+        // Update background position to create a parallax effect
+        backgroundPosition.x = camera.position.x - Gdx.graphics.getWidth() / 2f;
+        backgroundPosition.y = camera.position.y - Gdx.graphics.getHeight() / 2f;
+    }
+
+    private void checkCollisions() {
+        // Check collision with object 1
+        if (playerPosition.dst(object1Position) < (objectRadius + playerSprite.getWidth() / 2f)) {
+            gameOver = true;
+        }
+
+        // Check collision with object 2
+        if (playerPosition.dst(object2Position) < (objectRadius + playerSprite.getWidth() / 2f)) {
+            gameOver = true;
+        }
     }
 
     private void draw() {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.setProjectionMatrix(camera.combined);
+
         batch.begin();
-        backgroundSprite.draw(batch);
+
+        // Draw background
+        batch.draw(backgroundTexture, backgroundPosition.x, backgroundPosition.y, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        // Draw objects (dots) in red
+        batch.setColor(1, 0, 0, 1); // Set color to red
+        batch.draw(playerTexture, object1Position.x - objectRadius, object1Position.y - objectRadius, objectRadius * 2, objectRadius * 2);
+        batch.draw(playerTexture, object2Position.x - objectRadius, object2Position.y - objectRadius, objectRadius * 2, objectRadius * 2);
+        batch.setColor(1, 1, 1, 1); // Reset color to white
+
+        // Draw player sprite with scaling
+        playerSprite.setPosition(playerPosition.x - playerSprite.getWidth() / 2f, playerPosition.y - playerSprite.getHeight() / 2f);
+        playerSprite.draw(batch);
+
         batch.end();
+
+        if (gameOver) {
+            renderGameOver();
+        }
+    }
+    
+    
+    private void renderGameOver() {
+
+
+        System.out.println("Game Over!");
+        Gdx.app.exit();
     }
 
     @Override
@@ -62,5 +146,6 @@ public class ChallengeScreen extends ScreenAdapter {
     public void dispose() {
         batch.dispose();
         backgroundTexture.dispose();
+        playerTexture.dispose();
     }
 }
