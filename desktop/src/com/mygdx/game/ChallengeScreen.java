@@ -10,6 +10,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class ChallengeScreen extends ScreenAdapter {
 
@@ -17,6 +20,13 @@ public class ChallengeScreen extends ScreenAdapter {
     private Texture backgroundTexture;
     private Sprite backgroundSprite;
 
+    private SpriteBatch projectileBatch;
+    private Texture projectileTexture;
+    private Vector2 shootingDirection;
+    private boolean shooting;
+
+    private List<Projectile> projectiles;
+    
     // Player sprite and position
     private Texture playerTexture;
     private Sprite playerSprite;
@@ -50,6 +60,14 @@ public class ChallengeScreen extends ScreenAdapter {
         // Set object positions
         object1Position = new Vector2(300, 300);
         object2Position = new Vector2(500, 500);
+        
+        projectileBatch = new SpriteBatch();
+        projectileTexture = new Texture(Gdx.files.internal("white_pixel.png"));
+        shootingDirection = new Vector2(0, 1); // Initial shooting direction (up)
+        shooting = false;
+
+        projectiles = new ArrayList<>();
+        
     }
 
     @Override
@@ -62,7 +80,7 @@ public class ChallengeScreen extends ScreenAdapter {
 
     private void handleInput() {
         float speed = 200f * Gdx.graphics.getDeltaTime();
-
+        
         // Move player based on input
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             playerPosition.y += speed;
@@ -76,7 +94,40 @@ public class ChallengeScreen extends ScreenAdapter {
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             playerPosition.x += speed;
         }
+        
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+            if (!shooting) {
+                projectiles.add(new Projectile(new Vector2(playerPosition), new Vector2(shootingDirection)));
+                shooting = true;
+            }
+        } else {
+            shooting = false;
+        }
+        
     }
+    
+    private void updateProjectiles(float delta) {
+        Iterator<Projectile> iterator = projectiles.iterator();
+        while (iterator.hasNext()) {
+            Projectile projectile = iterator.next();
+            projectile.update(delta);
+
+            // Remove projectiles that go off-screen
+            if (projectile.getPosition().x < 0 || projectile.getPosition().x > Gdx.graphics.getWidth() ||
+                projectile.getPosition().y < 0 || projectile.getPosition().y > Gdx.graphics.getHeight()) {
+                iterator.remove();
+            }
+        }
+    }
+
+    private void drawProjectiles() {
+        projectileBatch.begin();
+        for (Projectile projectile : projectiles) {
+            projectile.draw(projectileBatch);
+        }
+        projectileBatch.end();
+    }
+
 
     private void updateCamera() {
         float lerp = 0.1f;
@@ -106,7 +157,9 @@ public class ChallengeScreen extends ScreenAdapter {
         batch.setProjectionMatrix(camera.combined);
 
         batch.begin();
-
+        
+        drawProjectiles();
+        
         // Draw background
         batch.draw(backgroundTexture, backgroundPosition.x, backgroundPosition.y, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
@@ -147,5 +200,7 @@ public class ChallengeScreen extends ScreenAdapter {
         batch.dispose();
         backgroundTexture.dispose();
         playerTexture.dispose();
+        projectileBatch.dispose();
+        projectileTexture.dispose();
     }
 }
