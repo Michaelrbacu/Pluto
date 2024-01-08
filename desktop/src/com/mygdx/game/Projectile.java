@@ -7,7 +7,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 public class Projectile {
-
+	
+    private float x;
+    private float y;
+    private float speed;
+    
     private static final float SPEED = 500f; // Adjust the speed of the projectile as needed
     private static final float SIZE = 5f; // Adjust the size of the projectile as needed
 
@@ -24,6 +28,12 @@ public class Projectile {
         sprite = new Sprite(texture);
         sprite.setSize(SIZE, SIZE);
         sprite.setPosition(position.x - SIZE / 2f, position.y - SIZE / 2f);
+    }
+    
+    public boolean isOutOfBounds() {
+        // Implement the logic to check whether the projectile is out of bounds
+        // For example, check if the projectile is beyond the screen boundaries
+        return x < 0 || x > Gdx.graphics.getWidth() || y < 0 || y > Gdx.graphics.getHeight();
     }
 
     public void update(float delta) {

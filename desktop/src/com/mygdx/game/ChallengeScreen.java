@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -26,7 +27,7 @@ public class ChallengeScreen extends ScreenAdapter {
     private boolean shooting;
 
     private List<Projectile> projectiles;
-    
+
     // Player sprite and position
     private Texture playerTexture;
     private Sprite playerSprite;
@@ -53,6 +54,7 @@ public class ChallengeScreen extends ScreenAdapter {
         playerSprite.setPosition(playerPosition.x - playerSprite.getWidth() / 2f, playerPosition.y - playerSprite.getHeight() / 2f);
 
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, 0);
         camera.update();
         backgroundPosition = new Vector2(0, 0);
@@ -60,27 +62,27 @@ public class ChallengeScreen extends ScreenAdapter {
         // Set object positions
         object1Position = new Vector2(300, 300);
         object2Position = new Vector2(500, 500);
-        
+
         projectileBatch = new SpriteBatch();
         projectileTexture = new Texture(Gdx.files.internal("white_pixel.png"));
         shootingDirection = new Vector2(0, 1); // Initial shooting direction (up)
         shooting = false;
 
         projectiles = new ArrayList<>();
-        
     }
 
     @Override
     public void render(float delta) {
         handleInput();
         updateCamera();
+        updateProjectiles(delta); // Added delta time
         checkCollisions(); // New method to check collisions
         draw();
     }
 
     private void handleInput() {
         float speed = 200f * Gdx.graphics.getDeltaTime();
-        
+
         // Move player based on input
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             playerPosition.y += speed;
@@ -94,7 +96,7 @@ public class ChallengeScreen extends ScreenAdapter {
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             playerPosition.x += speed;
         }
-        
+
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             if (!shooting) {
                 projectiles.add(new Projectile(new Vector2(playerPosition), new Vector2(shootingDirection)));
@@ -103,9 +105,9 @@ public class ChallengeScreen extends ScreenAdapter {
         } else {
             shooting = false;
         }
-        
+
     }
-    
+
     private void updateProjectiles(float delta) {
         Iterator<Projectile> iterator = projectiles.iterator();
         while (iterator.hasNext()) {
@@ -114,7 +116,7 @@ public class ChallengeScreen extends ScreenAdapter {
 
             // Remove projectiles that go off-screen
             if (projectile.getPosition().x < 0 || projectile.getPosition().x > Gdx.graphics.getWidth() ||
-                projectile.getPosition().y < 0 || projectile.getPosition().y > Gdx.graphics.getHeight()) {
+                    projectile.getPosition().y < 0 || projectile.getPosition().y > Gdx.graphics.getHeight()) {
                 iterator.remove();
             }
         }
@@ -128,15 +130,10 @@ public class ChallengeScreen extends ScreenAdapter {
         projectileBatch.end();
     }
 
-
     private void updateCamera() {
         float lerp = 0.1f;
         camera.position.lerp(new Vector3(playerPosition.x, playerPosition.y, 0), lerp);
         camera.update();
-
-        // Update background position to create a parallax effect
-        backgroundPosition.x = camera.position.x - Gdx.graphics.getWidth() / 2f;
-        backgroundPosition.y = camera.position.y - Gdx.graphics.getHeight() / 2f;
     }
 
     private void checkCollisions() {
@@ -157,9 +154,7 @@ public class ChallengeScreen extends ScreenAdapter {
         batch.setProjectionMatrix(camera.combined);
 
         batch.begin();
-        
-        drawProjectiles();
-        
+
         // Draw background
         batch.draw(backgroundTexture, backgroundPosition.x, backgroundPosition.y, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
@@ -173,17 +168,16 @@ public class ChallengeScreen extends ScreenAdapter {
         playerSprite.setPosition(playerPosition.x - playerSprite.getWidth() / 2f, playerPosition.y - playerSprite.getHeight() / 2f);
         playerSprite.draw(batch);
 
+        drawProjectiles();
+
         batch.end();
 
         if (gameOver) {
             renderGameOver();
         }
     }
-    
-    
+
     private void renderGameOver() {
-
-
         System.out.println("Game Over!");
         Gdx.app.exit();
     }
