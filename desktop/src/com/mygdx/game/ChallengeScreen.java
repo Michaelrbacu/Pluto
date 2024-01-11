@@ -38,7 +38,7 @@ public class ChallengeScreen extends ScreenAdapter {
 
     private Vector2 object1Position;
     private Vector2 object2Position;
-    private float objectRadius = 10f; // Radius of the objects
+    private float objectRadius = 10f;
     private boolean gameOver = false;
 
     @Override
@@ -59,7 +59,6 @@ public class ChallengeScreen extends ScreenAdapter {
         camera.update();
         backgroundPosition = new Vector2(0, 0);
 
-        // Set object positions
         object1Position = new Vector2(300, 300);
         object2Position = new Vector2(500, 500);
 
@@ -69,14 +68,16 @@ public class ChallengeScreen extends ScreenAdapter {
         shooting = false;
 
         projectiles = new ArrayList<>();
+
+        fixedBackgroundPosition = new Vector2(0, 0);
     }
 
     @Override
     public void render(float delta) {
         handleInput();
         updateCamera();
-        updateProjectiles(delta); // Added delta time
-        checkCollisions(); // New method to check collisions
+        updateProjectiles(delta);
+        checkCollisions();
         draw();
     }
 
@@ -105,9 +106,14 @@ public class ChallengeScreen extends ScreenAdapter {
         } else {
             shooting = false;
         }
-
     }
 
+    private void updateCamera() {
+        float lerp = 0.1f;
+        camera.position.lerp(new Vector3(playerPosition.x, playerPosition.y, 0), lerp);
+        camera.update();
+    }
+    
     private void updateProjectiles(float delta) {
         Iterator<Projectile> iterator = projectiles.iterator();
         while (iterator.hasNext()) {
@@ -128,12 +134,6 @@ public class ChallengeScreen extends ScreenAdapter {
             projectile.draw(projectileBatch);
         }
         projectileBatch.end();
-    }
-
-    private void updateCamera() {
-        float lerp = 0.1f;
-        camera.position.lerp(new Vector3(playerPosition.x, playerPosition.y, 0), lerp);
-        camera.update();
     }
 
     private void checkCollisions() {
