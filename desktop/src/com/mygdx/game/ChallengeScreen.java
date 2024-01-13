@@ -20,7 +20,9 @@ public class ChallengeScreen extends ScreenAdapter {
     private SpriteBatch batch;
     private Texture backgroundTexture;
     private Sprite backgroundSprite;
-
+    
+    private Vector2 fixedBackgroundPosition;
+    
     private SpriteBatch projectileBatch;
     private Texture projectileTexture;
     private Vector2 shootingDirection;
