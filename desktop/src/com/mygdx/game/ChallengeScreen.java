@@ -139,12 +139,11 @@ public class ChallengeScreen extends ScreenAdapter {
     }
 
     private void checkCollisions() {
-        // Check collision with object 1
+    	
         if (playerPosition.dst(object1Position) < (objectRadius + playerSprite.getWidth() / 2f)) {
             gameOver = true;
         }
 
-        // Check collision with object 2
         if (playerPosition.dst(object2Position) < (objectRadius + playerSprite.getWidth() / 2f)) {
             gameOver = true;
         }
