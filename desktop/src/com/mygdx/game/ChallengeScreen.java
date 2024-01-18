@@ -139,7 +139,27 @@ public class ChallengeScreen extends ScreenAdapter {
     }
 
     private void checkCollisions() {
-    	
+        // Check collisions with projectiles and objects
+        Iterator<Projectile> projectileIterator = projectiles.iterator();
+        while (projectileIterator.hasNext()) {
+            Projectile projectile = projectileIterator.next();
+
+            // Check collision with object1
+            if (projectile.getPosition().dst(object1Position) < (objectRadius + projectile.getWidth() / 2f)) {
+                projectileIterator.remove(); // Remove the projectile
+                // Remove the enemy (object1)
+                object1Position.set(-100, -100); // Move the enemy off-screen (change position as needed)
+            }
+
+            // Check collision with object2
+            if (projectile.getPosition().dst(object2Position) < (objectRadius + projectile.getWidth() / 2f)) {
+                projectileIterator.remove(); // Remove the projectile
+                // Remove the enemy (object2)
+                object2Position.set(-100, -100); // Move the enemy off-screen (change position as needed)
+            }
+        }
+
+        // Check collisions with player
         if (playerPosition.dst(object1Position) < (objectRadius + playerSprite.getWidth() / 2f)) {
             gameOver = true;
         }
@@ -148,6 +168,7 @@ public class ChallengeScreen extends ScreenAdapter {
             gameOver = true;
         }
     }
+
 
     private void draw() {
         Gdx.gl.glClearColor(0, 0, 0, 1);
